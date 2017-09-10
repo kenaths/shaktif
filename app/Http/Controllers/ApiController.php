@@ -23,6 +23,12 @@ class ApiController extends Controller
     protected $statusCode = 200;
 
     /**
+     * @var int
+     */
+    protected $per_page = 10;
+
+
+    /**
      * @return mixed
      */
     public function getStatusCode()

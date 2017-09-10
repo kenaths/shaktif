@@ -1,10 +1,14 @@
 <?php
 
-use Illuminate\Http\Request;
-
 Route::post('/login', 'AuthenticateController@authenticate');
 
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix'=>'v1','middleware' => ['before' => 'jwt.auth']],function(){
+
+    Route::resource('/caller', 'CallerController');
+
+    Route::resource('/phone-number', 'PhoneNumberController');
+    Route::get('phone-number/{id}/caller','CallerController@caller');
+
+
 });
