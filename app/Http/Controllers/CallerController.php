@@ -49,8 +49,6 @@ class CallerController extends ApiController
     public function store(StoreCaller $caller)
     {
 
-        // return $this->validationFailed('Validation failed');
-
         $caller['created_user_id'] = Auth::user()->id;
 
         Caller::create($caller->all());

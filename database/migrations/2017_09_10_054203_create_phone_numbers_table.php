@@ -16,7 +16,7 @@ class CreatePhoneNumbersTable extends Migration
         Schema::create('phone_numbers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number','20');
-            $table->integer('caller_id');
+            $table->integer('caller_id')->nullable();
             $table->integer('created_user_id');
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePhoneNumber;
 use App\Niz\Transformers\PhoneNumberTransformer;
 use App\PhoneNumber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class PhoneNumberController extends ApiController
@@ -39,5 +41,21 @@ class PhoneNumberController extends ApiController
         ]);
     }
 
+
+    /**
+     * Save phone number
+     *
+     * @param StorePhoneNumber $storePhoneNumber
+     * @return mixed
+     */
+    public function store(StorePhoneNumber $storePhoneNumber)
+    {
+
+        $storePhoneNumber['created_user_id'] = Auth::user()->id;
+
+        PhoneNumber::create($storePhoneNumber->all());
+
+        return $this->respondCreated('Phone Number successfully added ');
+    }
 
 }
