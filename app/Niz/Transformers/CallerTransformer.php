@@ -16,6 +16,7 @@ class CallerTransformer extends Transformer
      */
     public function transform($caller){
         return [
+            'id' => (int) $caller['id'],
             'first_name' => $caller['first_name'],
             'last_name' => $caller['last_name'],
             'gender' => $caller['gender'],

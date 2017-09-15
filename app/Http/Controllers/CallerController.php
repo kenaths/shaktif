@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Caller;
+use App\CallerNote;
 use App\Http\Requests\StoreCaller;
+use App\Niz\Facades\Search;
 use App\Niz\Transformers\CallerTransformer;
+use App\PhoneNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 class CallerController extends ApiController
 {
@@ -36,6 +41,20 @@ class CallerController extends ApiController
                 ->where('phone_numbers.number',$phone);
         }
 
+        if( $nic = $request->get('nic') ){
+            $callers->where('nic',$nic);
+        }
+
+        if( $request->get('type') == 'first'){
+            if( $caller = $callers->first() ){
+                return $this->respond([
+                    'data' => $this->callerTransformer->transform( $caller ),
+                    'user_exists' => true
+                ]);
+            }
+            return array();
+        }
+
         $callersData = $callers->paginate($this->per_page);
 
         return $this->respond([
@@ -48,12 +67,21 @@ class CallerController extends ApiController
 
     public function store(StoreCaller $caller)
     {
+        $caller_array = $caller->all();
+        $caller_array['created_user_id'] = Auth::user()->id;
+        $caller_array['dob'] = date("Y-m-d",strtotime($caller_array['dob']));
 
-        $caller['created_user_id'] = Auth::user()->id;
 
-        Caller::create($caller->all());
+        $callerObj = Caller::create($caller_array);
 
-        return $this->respondCreated('Caller successfully created ');
+        if( isset($caller_array['phone']) && $caller_array['phone']){
+            $phone = new PhoneNumber();
+            $phone->number = $caller_array['phone'];
+            $phone->created_user_id  = Auth::user()->id;
+            $callerObj->phoneNumbers()->save($phone);
+        }
+
+        return $this->respondCreated('Caller successfully created ', $callerObj);
     }
 
     /**
@@ -97,6 +125,66 @@ class CallerController extends ApiController
     public function destroy(Caller $caller)
     {
         //
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function notes( $id )
+    {
+
+        $caller = Caller::findOrFail($id);
+        $notes = $caller->callerNotes()->with('user')
+            ->orderBy('id','DESC')
+            ->paginate($this->per_page);
+
+        return $this->respond([
+            'data' =>  $notes->all(),
+            'paginator' => [
+                'total_count' => $notes->total(),
+            ]
+        ]);
+    }
+
+    public function addNotes( $id , Request $request)
+    {
+
+        if(  $note = $request->post('note') ){
+
+            $callerObj = Caller::findOrFail($id);
+            $callerNote = new CallerNote();
+            $callerNote->note = $note;
+            $callerNote->created_user_id  = Auth::user()->id;
+            $callerObj->callerNotes()->save($callerNote);
+
+            return $this->respondCreated('Note has been added');
+        }
+
+        return $this->validationFailed();
+    }
+
+    /**
+     * @param $id
+     * @param Request $request
+     * @return mixed
+     */
+    public function addPhone( $id, Request $request )
+    {
+
+        if(  $phone_number = $request->post('phone') ){
+
+            $callerObj = Caller::findOrFail($id);
+            $phone = new PhoneNumber();
+            $phone->number = $phone_number;
+            $phone->created_user_id  = Auth::user()->id;
+            $callerObj->phoneNumbers()->save($phone);
+
+            return $this->respondCreated('Phone Number added',$callerObj);
+        }
+
+        return $this->validationFailed();
+
     }
 
 

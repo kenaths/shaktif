@@ -17,6 +17,23 @@ class Caller extends Model
 
     }
 
+    public function callerNotes()
+    {
+
+        return $this->hasMany( CallerNote::class);
+
+    }
+
+    public function scopeSearch( $query, $search )
+    {
+        return $query->where(function($query) use ($search) {
+
+            $query->where('first_name','LIKE',"%$search%")
+                ->orWhere('last_name','LIKE',"%$search%");
+
+        });
+    }
+
 
 
 }

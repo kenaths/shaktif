@@ -14,4 +14,8 @@ class PhoneNumber extends Model
         return $this->belongsTo(Caller::class);
     }
 
+    public function test(){
+
+    }
+
 }

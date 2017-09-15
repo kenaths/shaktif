@@ -97,10 +97,12 @@ class ApiController extends Controller
      * @param string $message
      * @return mixed
      */
-    public function respondCreated( $message = 'Successfully created')
+    public function respondCreated( $message = 'Successfully created', $data = array())
     {
         return $this->setStatusCode(201)->respond([
-            'message' => $message
+            'success' => true,
+            'message' => $message,
+            'data' => $data
         ]);
     }
 
@@ -109,6 +111,17 @@ class ApiController extends Controller
      * @return mixed
      */
     public function validationFailed( $message = 'Validation failed')
+    {
+        return $this->setStatusCode(422)->respond([
+            'message' => $message
+        ]);
+    }
+
+    /**
+     * @param string $message
+     * @return mixed
+     */
+    public function invalidArguments( $message = 'Invalid Arguments' )
     {
         return $this->setStatusCode(422)->respond([
             'message' => $message

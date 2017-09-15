@@ -58,4 +58,26 @@ class PhoneNumberController extends ApiController
         return $this->respondCreated('Phone Number successfully added ');
     }
 
+
+    /**
+     * @param $phone_number
+     * @return mixed
+     */
+    public function caller($phone_number)
+    {
+        if( !$phone_number ){
+            return $this->invalidArguments();
+        }
+        if( $phone = PhoneNumber::where('number',$phone_number)->first() ){
+
+            $phone->caller;
+
+            return $this->respond([
+                'data' =>  $phone
+            ]);
+        }
+        return $this->respondNotFound('Phone Number not found');
+
+    }
+
 }
