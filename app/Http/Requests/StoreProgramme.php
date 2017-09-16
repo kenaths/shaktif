@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreProgramme extends FormRequest
 {
@@ -24,7 +25,7 @@ class StoreProgramme extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required:callers|max:255|unique:program',
+            'name' => 'required:callers|max:255|unique:programmes',
         ];
     }
 }

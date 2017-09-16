@@ -10,7 +10,7 @@ namespace App\Niz\Search;
 
 
 use App\Caller;
-use App\Program;
+use App\Programme;
 
 class Search
 {
@@ -23,7 +23,7 @@ class Search
 
     public function programmes( $search )
     {
-        return Program::search($search);
+        return Programme::search($search);
     }
 
 

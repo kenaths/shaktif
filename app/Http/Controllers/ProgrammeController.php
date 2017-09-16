@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Caller;
+
 use App\Http\Requests\StoreProgramme;
 use App\Niz\Facades\Search;
+use App\Programme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,7 +45,7 @@ class ProgrammeController extends ApiController
 
         $programme_data['created_user_id'] = Auth::user()->id;
 
-        if( $programmeObj = Caller::create($programme_data)){
+        if( $programmeObj = Programme::create($programme_data)){
 
             return $this->respondCreated('Caller successfully created ', $programmeObj);
         }
