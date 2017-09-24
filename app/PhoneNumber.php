@@ -14,8 +14,18 @@ class PhoneNumber extends Model
         return $this->belongsTo(Caller::class);
     }
 
-    public function test(){
-
+    public function calls()
+    {
+        return $this->hasMany(Call::class,'phone_number','number');
     }
+
+    public function callCount()
+    {
+        //return $this->calls();
+        return $this->calls()
+            ->selectRaw('phone_number, programme_id, count(*) as aggregate')
+            ->groupBy('phone_number','programme_id');
+    }
+
 
 }

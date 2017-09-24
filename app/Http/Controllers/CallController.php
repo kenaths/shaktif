@@ -44,6 +44,7 @@ class CallController extends ApiController
 
             return Call::where('is_deleted',false)
                 ->whereIn('phone_number', $numbers)
+                ->with('programme')
                 ->with([
                     'operator'=>function($query){
                         $query->select(array('id','name'));
@@ -59,6 +60,7 @@ class CallController extends ApiController
 
             return Call::where('is_deleted',false)
                 ->where('phone_number',$phone)
+                ->with('programme')
                 ->with([
                     'operator'=>function($query){
                         $query->select(array('id','name'));
@@ -70,6 +72,7 @@ class CallController extends ApiController
         }
 
         return Call::where('is_deleted',false)
+            ->with('programme')
             ->where('user_id',Auth::user()->id)
             ->with([
             'phone'=>function($query){

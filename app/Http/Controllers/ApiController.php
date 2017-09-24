@@ -108,10 +108,17 @@ class ApiController extends Controller
 
     /**
      * @param string $message
+     * @param array $errors
      * @return mixed
      */
-    public function validationFailed( $message = 'Validation failed')
+    public function validationFailed( $message = 'Validation failed',$errors = array())
     {
+        if( !empty($errors)){
+            return $this->setStatusCode(422)->respond([
+                'message' => $message,
+                'errors' => $errors
+            ]);
+        }
         return $this->setStatusCode(422)->respond([
             'message' => $message
         ]);

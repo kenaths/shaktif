@@ -187,5 +187,45 @@ class CallerController extends ApiController
 
     }
 
+    public function programmes( $id , Request $request )
+    {
+        $params['from'] = date('Y-m-d',strtotime('-6 months'));
+        $params['to'] = date('Y-m-d',time());
+        $params['all'] = $request->get('all');
+
+        if($from_d = $request->get('from')){
+            $params['from'] = date('Y-m-d',strtotime($from_d));
+        }
+
+        if($to_d = $request->get('to')){
+            $params['to'] = date('Y-m-d',strtotime($to_d));
+        }
+
+        $caller = Caller::find($id);
+
+        if( empty($caller)){
+            return $this->respondNotFound('Caller not found');
+        }
+
+        $arr = $caller->programmeCount($params);
+
+        $re = array();
+        foreach( $arr->toArray() as $k=>$v){
+            foreach( $v['call_count'] as $count ){
+                if( !$count['programme_id'] ){
+                    continue;
+                }
+                $re[ $count['programme']['name'] ][ $v['number'] ] = [
+                    'phone' => $v['number'],
+                    'count' => $count['aggregate']
+                ];
+            }
+        }
+
+        return $this->respond([
+            'data' => $re
+        ]);
+
+    }
 
 }

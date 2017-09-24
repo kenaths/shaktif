@@ -9,6 +9,7 @@ Route::group(['prefix'=>'v1','middleware' => ['before' => 'jwt.auth']],function(
     Route::get('caller/{id}/notes','CallerController@notes');
     Route::post('caller/{id}/notes','CallerController@addNotes');
     Route::post('caller/{id}/phone','CallerController@addPhone');
+    Route::get('caller/{id}/programmes','CallerController@programmes');
 
 
     Route::resource('/phone-number', 'PhoneNumberController');
@@ -20,6 +21,9 @@ Route::group(['prefix'=>'v1','middleware' => ['before' => 'jwt.auth']],function(
 
 
     Route::get('app','AppController@index');
-    Route::get('test','AppController@test');
+    Route::get('app/settings','AppController@getSettings');
+    Route::post('app/settings','AppController@settings');
+
+
 
 });
